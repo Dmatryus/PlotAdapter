@@ -5,6 +5,7 @@ from pathlib import Path
 
 from plot import Plot
 
+
 class Layout(ABC):
     pass
 
@@ -20,8 +21,8 @@ class Canvas:
         width: int = None,
         height: int = None,
         init_plots: List[Plot] = None,
-        style: Style =  None,
-        backend: str = None
+        style: Style = None,
+        backend: str = None,
     ):
         self.layout = layout or VerticalLayout()
         self.width = width
@@ -36,5 +37,5 @@ class Canvas:
     def show(self, rebuild=False):
         pass
 
-    def  to_file(self,  file_path: Union[str, Path],  rebuild=False):
+    def to_file(self, file_path: Union[str, Path], rebuild=False):
         pass
