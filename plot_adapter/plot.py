@@ -22,8 +22,9 @@ def backend_selector(backend: Union[str, Backend]):
         raise ValueError(f"Backend {backend} not supported")
 
 
-class Plot:
+class Plot(ABC):
     plot_type = None
+    plot_data = {}
 
     def __init__(
         self,
@@ -39,7 +40,7 @@ class Plot:
         self.plot_type = kwargs.get("plot_type", self.plot_type)
         self.backend = backend_selector(kwargs.get("backend", self.backend))
         self.backend_obj = self.backend.get_plot(data, self.plot_type)
-
+        self.plot_data = self.backend_obj.get_data()
     def show(self):
         self.backend_obj.show()
 
@@ -50,6 +51,10 @@ class Plot:
         result = copy.deepcopy(self)
         result.backend_obj = result.backend.sum(result.backend_obj, other.backend_obj)
         return result
+
+    @abstractmethod
+    def rebuild(self):
+        pass
 
 class LinePlot(Plot):
     plot_type = "line"
@@ -73,6 +78,8 @@ class LinePlot(Plot):
             linear_data[c] = lr_function(x)
 
         result = pd.DataFrame(result).set_index(data.index.name).sort_index()
+
+    
 
 
 
