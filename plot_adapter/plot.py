@@ -50,9 +50,11 @@ class Plot(ABC):
     def __add__(self, other):
         result = copy.deepcopy(self)
         result.backend_obj = result.backend.sum(result.backend_obj, other.backend_obj)
+        result.plot_data = result.backend_obj.get_data()
         return result
 
-    @abstractmethod
+    # def 
+
     def rebuild(self):
         pass
 
@@ -78,8 +80,3 @@ class LinePlot(Plot):
             linear_data[c] = lr_function(x)
 
         result = pd.DataFrame(result).set_index(data.index.name).sort_index()
-
-    
-
-
-
