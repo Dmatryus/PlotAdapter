@@ -55,11 +55,3 @@ class MatplotlibBackend(Backend):
                 axs.plot(data.index, data[f], label=f)
             axs.legend()
         return MatplotlibPlot(fig, axs, plot_type)
-
-    @staticmethod
-    def sum(plot1: MatplotlibPlot, plot2: MatplotlibPlot) -> MatplotlibPlot:
-        result = copy.deepcopy(plot1)
-        for line in plot2.axs.get_lines():
-            result.axs.plot(line.get_xdata(), line.get_ydata(), label=line.get_label())
-        result.refresh_style()
-        return result

@@ -21,26 +21,44 @@ def backend_selector(backend: Union[str, Backend]):
     else:
         raise ValueError(f"Backend {backend} not supported")
 
+class PlotData:
+    def _get_data(self, data):
+        return copy.deepcopy(data) if self.copy_mode else data
+
+    def __init__(self, data: pd.DataFrame, copy_mode: bool = True):
+        self.copy_mode = copy_mode
+        self.data = self._get_data(data)
+
+    def __add__(self, other):
+        result = copy.deepcopy(self) if self.copy_mode else self
+        result.data = result.data.join(other.data, how="outer")
+        return self
+
+    
+
 
 class Plot(ABC):
     plot_type = None
-    plot_data = {}
+    plot_data: PlotData = None
 
     def __init__(
         self,
         backend: Union[str, Backend] = "matplotlib",
         backend_obj: BackendPlot = None,
+        copy_mode: bool = False,
         style: Style = None,
     ):
         self.backend = backend_selector(backend)
         self.backend_obj: BackendPlot = backend_obj
+        self.copy_mode = copy_mode
         self.style = style
 
     def build(self, data: pd.DataFrame, **kwargs):
+        self.plot_data = PlotData(data, copy_mode=self.copy_mode)
         self.plot_type = kwargs.get("plot_type", self.plot_type)
         self.backend = backend_selector(kwargs.get("backend", self.backend))
-        self.backend_obj = self.backend.get_plot(data, self.plot_type)
-        self.plot_data = self.backend_obj.get_data()
+        self.backend_obj = self.backend.get_plot(self.plot_data, self.plot_type)
+
     def show(self):
         self.backend_obj.show()
 
@@ -48,15 +66,10 @@ class Plot(ABC):
         self.backend_obj.to_file(file_path)
 
     def __add__(self, other):
-        result = copy.deepcopy(self)
-        result.backend_obj = result.backend.sum(result.backend_obj, other.backend_obj)
-        result.plot_data = result.backend_obj.get_data()
+        result = copy.deepcopy(self) if self.copy_mode else self
+        self.plot_data += other.plot_data
+        result.build(result.plot_data)
         return result
-
-    # def 
-
-    def rebuild(self):
-        pass
 
 class LinePlot(Plot):
     plot_type = "line"

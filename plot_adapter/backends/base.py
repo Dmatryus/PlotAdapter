@@ -14,8 +14,7 @@ class BackendPlot(ABC):
         pass
 
 class Backend(ABC):
-    pass
-
+    
     @abstractmethod
     def get_plot(data: pd.DataFrame, plot_type: str) -> BackendPlot:
         pass
