@@ -9,6 +9,7 @@ import numpy as np
 from backends.base import Backend, BackendPlot
 from backends.matplotlib import MatplotlibBackend
 from backends.plotly import PlotlyBackend
+from plot_data.plot_data import PlotData
 from style import Style
 
 def backend_selector(backend: Union[str, Backend]):
@@ -20,22 +21,6 @@ def backend_selector(backend: Union[str, Backend]):
         return PlotlyBackend()
     else:
         raise ValueError(f"Backend {backend} not supported")
-
-class PlotData:
-    def _get_data(self, data):
-        return copy.deepcopy(data) if self.copy_mode else data
-
-    def __init__(self, data: pd.DataFrame, copy_mode: bool = True):
-        self.copy_mode = copy_mode
-        self.data = self._get_data(data)
-
-    def __add__(self, other):
-        result = copy.deepcopy(self) if self.copy_mode else self
-        result.data = result.data.join(other.data, how="outer")
-        return self
-
-    
-
 
 class Plot(ABC):
     plot_type = None
