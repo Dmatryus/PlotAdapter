@@ -52,8 +52,8 @@ class Plot(ABC):
 
     def __add__(self, other):
         result = copy.deepcopy(self) if self.copy_mode else self
-        self.plot_data += other.plot_data
-        result.build(result.plot_data)
+        result.plot_data += other.plot_data
+        result.build(result.plot_data.data)
         return result
 
 class LinePlot(Plot):

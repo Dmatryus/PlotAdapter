@@ -11,6 +11,12 @@ class PandasPlotData(BasePlotData):
         result.data = result.data.join(other.data, how="outer")
         return self
 
+    def __getitem__(self, idx):
+        return self.data[idx]
+
+    def __setitem__(self, idx, value):
+        self.data[idx] = value
+
     @property
     def index(self):
         return self.data.index

@@ -13,6 +13,14 @@ class BasePlotData(ABC):
     def __add__(self, other):
         raise NotImplementedError
 
+    @abstractmethod
+    def __getitem__(self, idx):
+        raise NotImplementedError
+
+    @abstractmethod
+    def __setitem__(self, idx, value):
+        raise NotImplementedError
+
     @abstractproperty
     def index(self):
         raise NotImplementedError

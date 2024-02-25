@@ -12,7 +12,13 @@ class PlotData(BasePlotData):
         self._backend = backend_selector(data, copy_mode=copy_mode)
 
     def __add__(self, other):
-        return self._backend.__add__(self, other)
+        return self._backend.__add__(other)
+
+    def __getitem__(self, idx):
+        return self._backend.__getitem__(idx)
+
+    def __setitem__(self, idx, value):
+        self._backend.__setitem__(idx, value)
 
     @property
     def index(self):
